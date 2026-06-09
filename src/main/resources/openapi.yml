@@ -1,0 +1,40 @@
+openapi: 3.0.0
+info:
+  title: 練習用
+  version: 1.0.0
+
+paths:
+  /api/auth/login:
+    post:
+      summary: ログイン
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: taro@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: 認証成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  userId:
+                    type: integer
+                  name:
+                    type: string
+                  role:
+                    type: string
+        '401':
+          description: 認証失敗
