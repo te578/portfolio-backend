@@ -5,7 +5,6 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.User;
 import com.example.demo.dto.response.ResponseDTO;
 
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
