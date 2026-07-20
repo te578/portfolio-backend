@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ExtendsDemo",
+            "request": "launch",
+            "mainClass": "com.example.demo.ExtendsDemo",
+            "projectName": "demo"
+        },
+        {
+            "type": "java",
+            "name": "SimpleTest",
+            "request": "launch",
+            "mainClass": "com.example.demo.SimpleTest",
+            "projectName": "demo"
+        },
+        {
+            "type": "java",
             "name": "DemoApplication",
             "request": "launch",
             "mainClass": "com.example.demo.DemoApplication",
