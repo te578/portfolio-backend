@@ -4,6 +4,7 @@ import com.example.demo.dto.request.RequestDTO;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.User;
 import com.example.demo.dto.response.ResponseDTO;
+import com.example.demo.exception.UserNotFoundException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,12 +43,12 @@ public class UserServiceImpl implements UserService {
 
                 if (userinfo == null) {
                     log.warn("ユーザーが見つからない");
-                    throw new RuntimeException("Auth_001");
+                    throw new UserNotFoundException("ユーザーが見つかりません");
                 }
 
                 if (!passwordEncoder.matches(password, userinfo.getPassword())) {
                     log.warn("パスワード不一致");
-                    throw new RuntimeException("Auth001");
+                    throw new UserNotFoundException("パスワードが間違っています");
                 }
 
                 log.info("ログイン成功");
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
         } catch (Exception e) {
             log.error("認証エラー", e);
-            throw new RuntimeException("Auth_001");
+            throw new UserNotFoundException("認証に失敗しました");
         }
     }
 
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
                 if (existUser != null) {
                     log.warn("登録済みメールアドレス");
-                    throw new RuntimeException("すでにアカウントが登録されています");
+                    throw new UserNotFoundException("すでにアカウントが登録されています");
                 }
 
                 String name = requestDTO.getName();
