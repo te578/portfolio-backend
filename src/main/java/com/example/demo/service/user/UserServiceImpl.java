@@ -36,53 +36,46 @@ public class UserServiceImpl implements UserService {
     @Override
     public String authenticate(RequestDTO requestDTO) {
         log.info("ログイン試行:");
-        try {
-                String email = requestDTO.getEmail();
-                String password = requestDTO.getPassword();
-                User userinfo = userRepository.findByEmail(email);
 
-                if (userinfo == null) {
-                    log.warn("ユーザーが見つからない");
-                    throw new UserNotFoundException("ユーザーが見つかりません");
-                }
+        String email = requestDTO.getEmail();
+        String password = requestDTO.getPassword();
+        User userinfo = userRepository.findByEmail(email);
 
-                if (!passwordEncoder.matches(password, userinfo.getPassword())) {
-                    log.warn("パスワード不一致");
-                    throw new UserNotFoundException("パスワードが間違っています");
-                }
-
-                log.info("ログイン成功");
-                String token = jwtUtil.generateToken(userinfo.getEmail());
-                return token;
-
-        } catch (Exception e) {
-            log.error("認証エラー", e);
-            throw new UserNotFoundException("認証に失敗しました");
+        if (userinfo == null) {
+            log.warn("ユーザーが見つからない");
+            throw new UserNotFoundException("ユーザーが見つかりません");
         }
+
+        if (!passwordEncoder.matches(password, userinfo.getPassword())) {
+            log.warn("パスワード不一致");
+            throw new UserNotFoundException("パスワードが間違っています");
+        }
+
+        log.info("ログイン成功");
+        String token = jwtUtil.generateToken(userinfo.getEmail());
+        return token;
+            
+
     }
 
     @Override
     public void register(RequestDTO requestDTO) {
         log.info("ユーザー登録試行:");
-        try {
-                User existUser = userRepository.findByEmail(requestDTO.getEmail());
 
-                if (existUser != null) {
-                    log.warn("登録済みメールアドレス");
-                    throw new UserNotFoundException("すでにアカウントが登録されています");
-                }
+        User existUser = userRepository.findByEmail(requestDTO.getEmail());
 
-                String name = requestDTO.getName();
-                String email = requestDTO.getEmail();
-                String encodedPassword = passwordEncoder.encode(requestDTO.getPassword());
-
-                userRepository.save(name, email, encodedPassword);
-                log.info("ユーザー登録成功");
-
-        } catch (Exception e) {
-            log.error("登録エラー", e);
-            throw new RuntimeException("登録に失敗しました");
+        if (existUser != null) {
+            log.warn("登録済みメールアドレス");
+            throw new UserNotFoundException("すでにアカウントが登録されています");
         }
+
+        String name = requestDTO.getName();
+        String email = requestDTO.getEmail();
+        String encodedPassword = passwordEncoder.encode(requestDTO.getPassword());
+
+        userRepository.save(name, email, encodedPassword);
+        log.info("ユーザー登録成功");
+
 
     }
 

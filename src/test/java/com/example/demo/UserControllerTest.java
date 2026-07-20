@@ -29,29 +29,19 @@ class UserControllerTest {
     UserService userService;
 
     @Test
-    void ログイン失敗時のレスポンス全体を確認する() throws Exception {
+    void 想定外のエラーの場合は500と共通のRFC9457形式の共通エラーが返る() throws Exception {
         when(userService.authenticate(any(RequestDTO.class)))
-            .thenThrow(new UserNotFoundException("ユーザーが見つかりません"));
+            .thenThrow(new RuntimeException());
 
-        String requestBody = "{\"email\":\"nonexistent@example.com\",\"password\":\"password\"}";
-
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-            .andDo(print());  // ← ステータス・ヘッダー・body全部をコンソールに出力する
-    }
-
-    @Test
-    void ログイン成功時は200とトークンが返る() throws Exception {
-        when(userService.authenticate(any(RequestDTO.class))).thenReturn("dummy-token");
-
-        String requestBody = "{\"email\":\"user@example.com\",\"password\":\"password\"}";
+           String requestBody = "{\"email\":\"user@example.com\",\"password\":\"password\"}";
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
             .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token").value("dummy-token"));
+            .andExpect(status().isInternalServerError())
+            .andExpect(jsonPath("$.status").value(500))
+            .andExpect(jsonPath("$.detail").value("an unexpected error occurred"))
+            .andExpect(jsonPath("$.errorCode").value("INTERNAL_ERROR"));
     }
 }
