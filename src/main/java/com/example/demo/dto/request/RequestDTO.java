@@ -7,6 +7,6 @@ public class RequestDTO {
     //privateはアクセス修飾子で、外部から直接アクセスできないようにするためのもの
     private String email;
     private String password;
-    private String name;
+    private String username;
     
 }
