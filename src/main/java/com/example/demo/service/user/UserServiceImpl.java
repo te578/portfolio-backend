@@ -1,6 +1,7 @@
 package com.example.demo.service.user;
 
 import com.example.demo.dto.request.RequestDTO;
+import com.example.demo.dto.TokenPair;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.entity.User;
 import com.example.demo.dto.response.ResponseDTO;
@@ -22,19 +23,24 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final TokenServiceImpl tokenService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl( 
+                            UserRepository userRepository,
+                            TokenServiceImpl tokenService
+    ) {
 
         //さっき作った変数に入れているが実態は何も入れていないmybatisが勝手に実装してくれるから
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
         this.jwtUtil = new JwtUtil();
+        this.tokenService = tokenService;
 
     }
 
     // overrideして認証ロジックを実装
     @Override
-    public String authenticate(RequestDTO requestDTO) {
+    public TokenPair authenticate(RequestDTO requestDTO) {
         log.info("ログイン試行:");
 
         String email = requestDTO.getEmail();
@@ -52,10 +58,10 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info("ログイン成功");
-        String token = jwtUtil.generateToken(userinfo.getEmail());
-        return token;
+        TokenPair tokens = tokenService.getTokenPair(userinfo);
+        //String token = jwtUtil.generateToken(userinfo.getEmail());
+        return tokens;
             
-
     }
 
     @Override
@@ -69,7 +75,7 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("すでにアカウントが登録されています");
         }
 
-        String name = requestDTO.getName();
+        String name = requestDTO.getUsername();
         String email = requestDTO.getEmail();
         String encodedPassword = passwordEncoder.encode(requestDTO.getPassword());
 
