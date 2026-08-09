@@ -1,5 +1,6 @@
 package com.example.demo.integration;
 
+import com.example.demo.dto.TokenPair;
 import com.example.demo.dto.request.RequestDTO;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.service.user.UserService;
@@ -42,7 +43,7 @@ class UserAuthenticationIT {
     @Test
     void 登録したユーザーで正しい認証情報を使うとトークンが返る() {
         RequestDTO registerDTO = new RequestDTO();
-        registerDTO.setName("テストユーザー");
+        registerDTO.setUsername("テストユーザー");
         registerDTO.setEmail("integration-test@example.com");
         registerDTO.setPassword("password123");
 
@@ -52,8 +53,8 @@ class UserAuthenticationIT {
         loginDTO.setEmail("integration-test@example.com");
         loginDTO.setPassword("password123");
 
-        String token = userService.authenticate(loginDTO);
+        TokenPair tokens = userService.authenticate(loginDTO);
 
-        assertNotNull(token);
+        assertNotNull(tokens);
     }
 }
