@@ -9,6 +9,7 @@ import com.example.demo.dto.request.RequestDTO;
 
 import com.example.demo.service.user.UserService;
 import com.example.demo.dto.response.ResponseDTO;
+import com.example.demo.dto.TokenPair;
 
 @RestController
 @RequestMapping("/api")
@@ -25,10 +26,11 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody RequestDTO requestDTO) {
 
     //そのままDTOごと渡す
-        var val = userService.authenticate(requestDTO);
+        TokenPair tokens = userService.authenticate(requestDTO);
 
         ResponseDTO res = new ResponseDTO();
-        res.setToken(val);
+        res.setAccessToken(tokens.getAccessToken());
+        res.setRefreshToken(tokens.getRefreshToken());
         return ResponseEntity.ok(res);
 
     }

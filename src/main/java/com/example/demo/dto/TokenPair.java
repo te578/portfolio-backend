@@ -1,11 +1,10 @@
-package com.example.demo.dto.response;
+package com.example.demo.dto;
 
 import lombok.Data;
 
 @Data
-public class ResponseDTO {
+public class TokenPair {
     private String accessToken;
     private String refreshToken;
-    private int    role;
 
 }
